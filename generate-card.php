@@ -17,8 +17,8 @@ if(isset($token)){
 	$fb->setDefaultAccessToken($token);
 
 	try {
-		$response = $fb->get('/me');
-		$user = $response->getGraphUser();
+		$response = $fb->get('/me?fields=name');
+		$user = $response->getDecodedBody();
 	}
 	catch(Facebook\Exceptions\FacebookResponseException $e){
 		exit('Graph returned an error: ' . $e->getMessage());
@@ -27,5 +27,6 @@ if(isset($token)){
 		exit('Facebook SDK returned an error: ' . $e->getMessage());
 	}
 
-	exit('Olá ' . $user->getName());
+	$params = get_card_params($user);
+	$img_data = generate_card($params);
 }
