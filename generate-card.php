@@ -27,6 +27,22 @@ if(isset($token)){
 		exit('Facebook SDK returned an error: ' . $e->getMessage());
 	}
 
-	$params = get_card_params($user);
+	$params = get_cardmaker_params($user);
+	$monster_data = get_monster_for($user);
+
+	$type = preg_split('/\//i', $monster_data['type']);
+	$params += [
+		'cardtype' => $monster_data['card_type'],
+		'attribute' => $monster_data['family'],
+		'level' => $monster_data['level'],
+		'rarity' => 'Common',
+		'type' => $type[0],
+		'subtype' => $type[1],
+		'carddescription' => $monster_data['text'],
+		'atk' => $monster_data['atk'],
+		'def' => $monster_data['def'],
+	];
 	$img_data = generate_card($params);
+
+	// file_put_contents('test/1.jpg', $img_data);
 }

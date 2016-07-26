@@ -31,25 +31,17 @@ function get_cardmaker_upload_path($url){
 	return $matches[1];
 }
 
-function get_card_params($user){
+function get_cardmaker_params($user){
 	$picture_url = 'http://graph.facebook.com/' . $user['id'] . '/picture?width=400';
 	$path = get_cardmaker_upload_path($picture_url);
+	// $path = 'tempimages/175108937.jpg';
 
 	return [
 		'name' => $user['name'],
-		'cardtype' => 'Monster',
-		'subtype' => 'magic',
-		'attribute' => 'Dark',
-		'level' => 8,
-		'rarity' => 'Common',
 		'picture' => $path,
 		'circulation' => '',
 		'set1' => '',
 		'set2' => '',
-		'type' => 'bodibuilde',
-		'carddescription' => 'lorem',
-		'atk' => 1300,
-		'def' => 4000,
 		'creator' => '',
 		'year' => '2016',
 		'serial' => ''
@@ -61,4 +53,30 @@ function generate_card($params){
 	$url = $page . '?' . http_build_query($params);
 
 	return file_get_contents($url);
+}
+
+function url_exists($url){
+	$headers = get_headers($url);
+	return !preg_match('/404 not found$/i', $headers[0]);
+}
+
+function get_monster_for($user){
+	global $config;
+	if(isset($config['predefined_user_cards'][$user['id']]))
+		return get_monster_data($config['predefined_user_cards'][$user['id']]);
+}
+
+function get_monster_data($name){
+	$name = str_replace('#', '', $name);
+	$url = 'http://yugiohprices.com/api/card_data/' . $name;
+	$json = file_get_contents($url);
+	$response = json_decode($json, true);
+
+	$url = 'http://yugioh.wikia.com/wiki/Special:ExportRDF/' . str_replace(' ', '_', $name);
+	$xml = file_get_contents($url);
+	preg_match('/<property:Portuguese_name rdf:datatype=\"(?:.+)\">(.+)<\/property:Portuguese_name>/mi', $xml, $matches);
+	if(isset($matches[1]))
+		$response['data']['portuguese_name'] = $matches[1];
+
+	return $response['data'];
 }
