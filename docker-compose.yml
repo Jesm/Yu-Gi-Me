@@ -6,3 +6,5 @@ services:
      - "80:80"
     volumes:
      - .:/var/www/html
+  db:
+    image: mongo:3.3
