@@ -7,6 +7,8 @@ $config = include('config.php');
 $fb = new Facebook\Facebook($config['facebook']);
 $helper = $fb->getRedirectLoginHelper();
 
+$mongo_manager = new MongoDB\Driver\Manager($config['mongo']['uri']);
+
 function save_remote_image($url){
 	// $headers = getallheaders();
 	$options = [
