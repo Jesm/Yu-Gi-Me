@@ -76,8 +76,36 @@ function url_exists($url){
 
 function get_monster_for($user){
 	global $config;
-	if(isset($config['predefined_user_cards'][$user['id']]))
-		return $config['predefined_user_cards'][$user['id']];
+	global $mongo_manager;
+
+	$where = [];
+	$options = ['limit' => 1];
+
+	$user_rs = mongo_query('users', ['id' => $user['id']]);
+	$user_exists = !!count($user_rs);
+
+	if($user_exists)
+		$where['json_name'] = $user_rs[0]->monster_name;
+	// elseif(isset($config['predefined_user_cards'][$user['id']]))
+	// 	$where['json_name'] = $config['predefined_user_cards'][$user['id']];
+	else{
+		$count_collection = new MongoDB\Driver\Command(['count' => 'cards']);
+		$results = $mongo_manager->executeCommand($config['mongo']['database'], $count_collection)->toArray();
+		$options['skip'] = random_int(0, $results[0]->n - 1);
+	}
+
+	$rs = mongo_query('cards', $where, $options);
+	$monster_data = $rs[0];
+
+	// Save user
+	if(!$user_exists){
+		$user['monster_name'] = $monster_data->json_name;
+		$bulk = new MongoDB\Driver\BulkWrite();
+		$bulk->insert($user);
+		$mongo_manager->executeBulkWrite($config['mongo']['database'] . '.users', $bulk);
+	}
+
+	return $monster_data;
 }
 
 function normalize_monster_name($str){
@@ -131,4 +159,24 @@ function generate_post_image($user_img_path, $monster_img_path, $background_img_
 	imagedestroy($user_img);
 	imagedestroy($monster_img);
 	imagedestroy($img);
+}
+
+function mongo_database_exists($manager, $str){
+	$list_databases = new MongoDB\Driver\Command(['listDatabases' => 1]);
+	$result = $manager->executeCommand('admin', $list_databases);
+	$databases = $result->toArray();
+
+	foreach($databases[0]->databases as $obj){
+		if($obj->name == $str)
+			return true;
+	}
+	return false;
+}
+
+function mongo_query($collection_str, $filter = array(), $options = array()){
+	global $config;
+	global $mongo_manager;
+
+	$query = new MongoDB\Driver\Query($filter, $options);
+	return $mongo_manager->executeQuery($config['mongo']['database'] . '.' . $collection_str, $query)->toArray();
 }
