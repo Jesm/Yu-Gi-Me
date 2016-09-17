@@ -39,4 +39,6 @@ foreach(array_unique($card_names) as $id => $card_name){
 	}
 }
 
+echo "Writing to database...\n";
 $result = $mongo_manager->executeBulkWrite($cfg_db . '.cards', $bulk);
+echo "Import completed!\n";

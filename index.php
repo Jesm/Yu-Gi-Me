@@ -2,8 +2,8 @@
 
 include 'start.php';
 
-$return_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/generate-card.php'; // TODO: refatorar para gerar url correta em caso de subdiretorios
-$permissions = ['public_profile'];
+$return_url = get_url_for('/generate-card.php');
+$permissions = ['public_profile', 'publish_actions'];
 $login_url = $helper->getLoginUrl($return_url, $permissions);
 
 header('Location: ' . $login_url);

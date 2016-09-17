@@ -180,3 +180,24 @@ function mongo_query($collection_str, $filter = array(), $options = array()){
 	$query = new MongoDB\Driver\Query($filter, $options);
 	return $mongo_manager->executeQuery($config['mongo']['database'] . '.' . $collection_str, $query)->toArray();
 }
+
+function get_url_for($str){
+	return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $str; // TODO: refactor to work in case app is not the root aplication of domain
+}
+
+function get_translated_post_content($user, $monster){
+	switch($user['locale']){
+	case 'pt_BR':
+		return [
+			'name' => 'Meu monstro Yu-Gi-Oh! compatível é "' . $monster->name . '"!',
+			'caption' => 'Yu-Gi-Me!',
+			'description' => 'Clique e descubra o seu!'
+		];
+	default:
+		return [
+			'name' => 'My compatible Yu-Gi-Oh! monster is "' . $monster->name . '"!',
+			'caption' => 'Yu-Gi-Me!',
+			'description' => 'Click and discover yours!'
+		];
+	}
+}

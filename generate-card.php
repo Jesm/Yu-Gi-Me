@@ -17,7 +17,7 @@ if(isset($token)){
 	$fb->setDefaultAccessToken($token);
 
 	try {
-		$response = $fb->get('/me?fields=name');
+		$response = $fb->get('/me?fields=name,locale');
 		$user = $response->getDecodedBody();
 	}
 	catch(Facebook\Exceptions\FacebookResponseException $e){
@@ -47,4 +47,20 @@ if(isset($token)){
 	$monster_img_path = 'img/cards/' . $monster_data->img_name;
 	$post_img_path = 'img/posts/' . $user['id'] . '_' . time() . '.jpg';
 	generate_post_image($user_img_path, $monster_img_path, 'img/bg_cropped.jpg', $post_img_path);
+
+	$post_data = [
+		'link' => get_url_for('/index.php'),
+		'picture' => get_url_for('/' . $monster_img_path)
+		// 'picture' => 'http://placehold.it/600x315'
+	];
+	$post_data += get_translated_post_content($user, $monster_data);
+
+	try {
+		$response = $fb->post('/me/feed', $post_data);
+		var_dump($response);
+	} catch(Facebook\Exceptions\FacebookResponseException $e) {
+		exit('Graph returned an error: ' . $e->getMessage());
+	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		exit('Facebook SDK returned an error: ' . $e->getMessage());
+	}
 }
