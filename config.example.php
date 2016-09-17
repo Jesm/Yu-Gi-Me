@@ -10,5 +10,11 @@ return [
 	'mongo' => [
 		'uri' => 'mongodb://localhost',
 		'database' => 'yugime'
-	]
+	],
+
+	'predefined_user_cards' => [
+		'{fb-id}' => 'Exodia the Forbidden One'
+	],
+
+	'min_post_image_keep_time' => 60 * 60 * 24 // 1 day
 ];

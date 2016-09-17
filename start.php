@@ -46,8 +46,7 @@ function get_cardmaker_upload_path($url){
 
 function get_cardmaker_params($user){
 	$picture_url = 'http://graph.facebook.com/' . $user['id'] . '/picture?width=400';
-	// $path = get_cardmaker_upload_path($picture_url);
-	$path = 'tempimages/175108937.jpg';
+	$path = get_cardmaker_upload_path($picture_url);
 
 	return [
 		'name' => $user['name'],
@@ -86,8 +85,8 @@ function get_monster_for($user){
 
 	if($user_exists)
 		$where['json_name'] = $user_rs[0]->monster_name;
-	// elseif(isset($config['predefined_user_cards'][$user['id']]))
-	// 	$where['json_name'] = $config['predefined_user_cards'][$user['id']];
+	elseif(isset($config['predefined_user_cards'][$user['id']]))
+		$where['json_name'] = $config['predefined_user_cards'][$user['id']];
 	else{
 		$count_collection = new MongoDB\Driver\Command(['count' => 'cards']);
 		$results = $mongo_manager->executeCommand($config['mongo']['database'], $count_collection)->toArray();
@@ -182,7 +181,7 @@ function mongo_query($collection_str, $filter = array(), $options = array()){
 }
 
 function get_url_for($str){
-	return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $str; // TODO: refactor to work in case app is not the root aplication of domain
+	return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $str;
 }
 
 function get_translated_post_content($user, $monster){
