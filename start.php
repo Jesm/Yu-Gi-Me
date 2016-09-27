@@ -113,7 +113,7 @@ function normalize_monster_name($str){
 
 function get_monster_data($name){
 	$name = normalize_monster_name($name);
-	$url = 'http://yugiohprices.com/api/card_data/' . $name;
+	$url = 'http://yugiohprices.com/api/card_data/' . urlencode($name);
 	$json = file_get_contents($url);
 	$response = json_decode($json, true);
 
