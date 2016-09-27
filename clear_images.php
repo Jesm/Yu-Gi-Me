@@ -2,9 +2,6 @@
 
 include 'start.php';
 
-file_put_contents('cron_test.txt', "Executing " . time() . "\n", FILE_APPEND);
-exit;
-
 $folder_path = 'img/posts';
 $files = scandir($folder_path);
 $curr_time = time();
