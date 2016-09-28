@@ -17,7 +17,7 @@ if(isset($token)){
 	$fb->setDefaultAccessToken($token);
 
 	try {
-		$response = $fb->get('/me?fields=name,locale');
+		$response = $fb->get('/me?fields=name,locale,link');
 		$user = $response->getDecodedBody();
 	}
 	catch(Facebook\Exceptions\FacebookResponseException $e){
@@ -57,7 +57,7 @@ if(isset($token)){
 
 	try {
 		$response = $fb->post('/me/feed', $post_data);
-		var_dump($response);
+		header('Location: ' . $user['link']);exit;
 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
 		exit('Graph returned an error: ' . $e->getMessage());
 	} catch(Facebook\Exceptions\FacebookSDKException $e) {
