@@ -181,7 +181,9 @@ function mongo_query($collection_str, $filter = array(), $options = array()){
 }
 
 function get_url_for($str){
-	return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $str;
+	$doc_root_len = strlen($_SERVER['CONTEXT_DOCUMENT_ROOT']);
+	$root = substr(__DIR__, $doc_root_len);
+	return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . $root . $str;
 }
 
 function get_translated_post_content($user, $monster){

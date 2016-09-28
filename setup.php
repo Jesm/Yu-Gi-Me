@@ -3,6 +3,7 @@
 include 'start.php';
 
 set_time_limit(0);
+chdir(__DIR__);
 $cfg_db = $config['mongo']['database'];
 
 // If database exists, delete all documents in cards collection; Otherwise, create collections
