@@ -189,14 +189,15 @@ function get_url_for($str){
 function get_translated_post_content($user, $monster){
 	switch($user['locale']){
 	case 'pt_BR':
+		$name = isset($monster->portuguese_name) ? $monster->portuguese_name : $monster->name;
 		return [
-			'name' => 'Meu monstro Yu-Gi-Oh! compatível é "' . $monster->name . '"!',
+			'name' => 'Meu monstro Yu-Gi-Oh! compatível é: ' . $name . '!',
 			'caption' => 'Yu-Gi-Me!',
 			'description' => 'Clique e descubra o seu!'
 		];
 	default:
 		return [
-			'name' => 'My compatible Yu-Gi-Oh! monster is "' . $monster->name . '"!',
+			'name' => 'My compatible Yu-Gi-Oh! monster is: ' . $monster->name . '!',
 			'caption' => 'Yu-Gi-Me!',
 			'description' => 'Click and discover yours!'
 		];

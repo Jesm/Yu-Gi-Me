@@ -57,7 +57,8 @@ if(isset($token)){
 
 	try {
 		$response = $fb->post('/me/feed', $post_data);
-		header('Location: ' . $user['link']);exit;
+		header('Location: ' . $user['link']);
+		exit;
 	} catch(Facebook\Exceptions\FacebookResponseException $e) {
 		exit('Graph returned an error: ' . $e->getMessage());
 	} catch(Facebook\Exceptions\FacebookSDKException $e) {
